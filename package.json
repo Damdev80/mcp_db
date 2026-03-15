@@ -6,7 +6,7 @@
     "dev": "concurrently \"npm run dev:next\" \"npm run dev:mcp\"",
     "dev:next": "next dev",
     "dev:mcp": "cd mcp-server && pnpm dev",
-    "build": "next build && cd mcp-server && pnpm build",
+    "build": "next build && cd mcp-server && pnpm install --frozen-lockfile=false && pnpm build",
     "start": "next start",
     "lint": "eslint"
   },
