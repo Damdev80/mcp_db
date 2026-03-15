@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Proyecto que combina un frontend Next.js 16 (App Router) con un MCP server que transforma preguntas en lenguaje natural en SQL y ejecuta la consulta contra una base de datos de transporte.
 
-## Getting Started
+## Estructura clave
 
-First, run the development server:
+- `app/`: páginas y componentes del cliente, incluyendo el chat conversacional y los estilos globales.
+- `app/api/db/nlp-query/route.ts`: consulta al servidor MCP, ejecuta el SQL con `postgres` y da formato conversacional al resultado. Maneja errores comunes como relaciones faltantes.
+- `mcp-server/`: backend Node con instrucciones para Anthropic; produce SQL a partir de texto y ofrece lógica de respaldo cuando el requerimiento es ambiguo.
+- `lib/`: helpers y esquemas compartidos usados por el frontend y el MCP server.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Dependencias
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js 16.1.6 y React 19.2.3 con Tailwind CSS 4 y TypeScript 5.
+- `postgres` para la conexión directa a la base de datos.
+- `@supabase/*` y `@neondatabase/serverless` para la integración con proveedores SQL.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Configurar `DATABASE_URL` en la raíz para el cliente Next.js. En `mcp-server/` se debe definir `ANTHROPIC_API_KEY` y su propio `DATABASE_URL` en un archivo `.env`.
 
-## Learn More
+## Comandos
 
-To learn more about Next.js, take a look at the following resources:
+- `pnpm dev`: arranca el frontend (puerto 3000) y el MCP server (puerto 3002) en paralelo.
+- `pnpm build`: compila Next.js y el servidor MCP.
+- `pnpm start`: ejecuta la versión optimizada de Next.js.
+- `pnpm lint`: ejecuta ESLint sobre el proyecto.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Flujo de consulta
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. El usuario escribe una pregunta en el chat y se envía a `/api/db/nlp-query`.
+2. El endpoint reenvía la pregunta y el historial al MCP server, que devuelve SQL y una posible explicación.
+3. El SQL ejecuta contra Postgres; el endpoint detecta tipos de consultas (aggregados, listados, vehículos) y estructura el mensaje final.
+4. Si falta una tabla, se reintenta generando SQL sin esa relación.
 
-## Deploy on Vercel
+## Consideraciones adicionales
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Hay estilos glassmorphism con blobs difuminados y claves neon para la UI.
+- Las respuestas intentan explicar el resultado (conteo, nombres, placas, vehículo) y adaptarse a distintos tipos de columnas.
+- El backend MCP incluye `generateFallbackSql` para seguir preguntas cortas como "sus placas".
