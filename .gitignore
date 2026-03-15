@@ -39,3 +39,26 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# mcp-server local artifacts
+/mcp-server/node_modules/
+/mcp-server/dist/
+/mcp-server/.env
+/mcp-server/.env.local
+/mcp-server/.env.*
+/mcp-server/.git
+
+# Development scripts and temp files
+dev.ps1
+*.ps1
+QUICK_START.md
+.vscode/settings.json
+
+# IDE and Editor
+.idea/
+.history/
+*.swp
+*.swo
+
+# OS specific
+Thumbs.db
