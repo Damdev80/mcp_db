@@ -3,7 +3,7 @@ import postgres from 'postgres';
 import { TABLE_COLUMNS } from '@/lib/database-schema';
 
 const DATABASE_URL = process.env.DATABASE_URL || '';
-const MCP_SERVER_URL = 'http://localhost:3002';
+const MCP_SERVER_URL = process.env.MCP_SERVER_URL || 'http://localhost:3002';
 
 type ConversationMessage = { role: 'user' | 'assistant'; content: string };
 
