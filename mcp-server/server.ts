@@ -591,7 +591,8 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', port: PORT });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 MCP Server running on http://localhost:${PORT}`);
-  console.log(`📝 Send POST requests to http://localhost:${PORT}/nlp-to-sql`);
+const portNumber = parseInt(String(PORT), 10) || 3002;
+app.listen(portNumber, '0.0.0.0', () => {
+  console.log(`MCP Server listening on port ${portNumber}`);
+  console.log(`Endpoint: POST http://0.0.0.0:${portNumber}/nlp-to-sql`);
 });
